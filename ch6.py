@@ -8,9 +8,15 @@ def PatternToNumber(pattern):
 		p -= 1
 	return num
 
-#def NumberToPattern(number, k):
+def NumberToPattern(number, k):
+	pattern = ""
+	d = {0: 'a', 1: 'c', 2: 'g', 3: 't'}
+	for i in range(0, k):
+		div = number/4
+		temp = number%4
+		pattern = pattern + d[temp]
+		number = div
+	return pattern[:: - 1].upper()
 
-
-
-
-print PatternToNumber('ATGCAA')
+print PatternToNumber('CCCAGGC')
+print NumberToPattern(5437, 7)
