@@ -12,7 +12,12 @@ def appxPatternCount(pattern, genome, d):
 			a.append(str(i))
 	return len(a)
 
+def suffix(pattern):
+	return pattern[1: ]
+def firstSymbol(pattern):
+	return pattern[0]
 
+#d = 1
 def immediateNeighbours(pattern):
 	neighborhood = []
 	neighborhood.append(pattern)
@@ -32,4 +37,27 @@ def immediateNeighbours(pattern):
 				print pattern
 	return ' '.join(neighborhood)
 
-print immediateNeighbours('ACG')
+def neighbors(pattern, d):
+	bases = ['A', 'T', 'G', 'C']
+	if d == 0:
+		return pattern
+	if len(pattern) == 1:
+		return bases
+	neighborhood = []
+	suffixNeighbors = neighbors(suffix(pattern), d)
+	for text in suffixNeighbors:
+		if hammingDistance(suffix(pattern), text) < d:
+			for j in bases:
+				neighborhood.append(j + text)
+		else:
+			neighborhood.append(firstSymbol(pattern) + text)
+
+	return neighborhood
+
+def iterativeNeighbors(pattern, d):
+	neighborhood = ['A', 'T', 'G', 'C']
+	for i in range(1, d + 1):
+		for text in neighborhood:
+			neighborhood.append(immediateNeighbours(text))
+	return set(neighborhood)
+
