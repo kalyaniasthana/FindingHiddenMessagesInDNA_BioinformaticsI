@@ -35,7 +35,7 @@ def immediateNeighbours(pattern):
 				pattern[i] = symbol
 				pattern = ''.join(pattern)
 				print pattern
-	return ' '.join(neighborhood)
+	return neighborhood
 
 def neighbors(pattern, d):
 	bases = ['A', 'T', 'G', 'C']
@@ -54,10 +54,12 @@ def neighbors(pattern, d):
 
 	return neighborhood
 
-def iterativeNeighbors(pattern, d):
+def iterativeNeighbors(pattern, d): #not working --> infinite loop
 	neighborhood = ['A', 'T', 'G', 'C']
-	for i in range(1, d + 1):
-		for text in neighborhood:
-			neighborhood.append(immediateNeighbours(text))
-	return set(neighborhood)
+	for j in range(1, d+1):
+		for pattern_ in neighborhood:
+			x = immediateNeighbours(pattern_)
+			for k in x:
+				neighborhood.append(k)
+	return neighborhood
 
