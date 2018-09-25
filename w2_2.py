@@ -90,6 +90,16 @@ def FrequentWordsWithMismatchesSorting(text, k , d):
 			pattern = RecursiveNumberToPattern(index[i], k)
 			frequentPatterns.append(pattern)
 	return frequentPatterns
+def computingFrequenciesWithMismatches(text, k , d):
+	frequencyArray = []
+	for i in range(0, 4**k):
+		frequencyArray.append(0)
+	for i in range(0, len(text) - k + 1):
+		pattern = text[i: i+k]
+		neighborhood = neighbors(pattern, d)
+		for pattern in neighborhood:
+			j = RecursivePatternToNumber(pattern)
+			frequencyArray[j] += 1
+	return frequencyArray
 
-print FrequentWordsWithMismatchesSorting('AGCGTTGCAT', 4, 2)
 
