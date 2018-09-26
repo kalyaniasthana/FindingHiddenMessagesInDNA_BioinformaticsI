@@ -1,4 +1,21 @@
 from ch6 import *
+import numpy
+
+def reverseComplement(string):
+	myStr = []
+	for i in range(0, len(string)):
+		if string[i] == 'A':
+			myStr.append('T')
+		elif string[i] == 'T':
+			myStr.append('A')
+		elif string[i] == 'G':
+			myStr.append('C')
+		elif string[i] == 'C':
+			myStr.append('G')
+
+	myStr = myStr[::-1]
+	myStr = "".join(myStr)
+	return myStr
 
 def hammingDistance(genome1, genome2):
 	hd = 0
@@ -65,7 +82,7 @@ def iterativeNeighbors(pattern, d): #not working --> infinite loop
 				neighborhood.append(k)
 	return neighborhood
 
-def FrequentWordsWithMismatchesSorting(text, k , d):
+def FrequentWordsWithMismatchesSorting(text, k, d):
 	frequentPatterns = []
 	neighborhood = []
 	index = []
@@ -75,6 +92,7 @@ def FrequentWordsWithMismatchesSorting(text, k , d):
 		for j in range(0, len(n)):
 			neighborhood.append(n[j])
 		n = []
+
 	neighborhoodArray = neighborhood
 	for i in range(0, len(neighborhood)):
 		pattern = neighborhoodArray[i]
@@ -90,6 +108,33 @@ def FrequentWordsWithMismatchesSorting(text, k , d):
 			pattern = RecursiveNumberToPattern(index[i], k)
 			frequentPatterns.append(pattern)
 	return frequentPatterns
+
+def FrequentWordsWithMismatchesAndReverseComplement(text, k, d):
+	rtext = reverseComplement(text)
+	frequencyArray = []
+	for i in range(0, 4**k):
+		frequencyArray.append(0)
+	for i in range(0, len(text) - k + 1):
+		pattern = text[i: i+k]
+		neighborhood = neighbors(pattern, d)
+		for appxPattern in neighborhood:
+			j = RecursivePatternToNumber(appxPattern)
+			frequencyArray[j] += 1
+	for i in range(0, len(rtext) - k + 1):
+		pattern = rtext[i:i+k]
+		neighborhood = neighbors(pattern,d)
+		for appxPattern in neighborhood:
+			j = RecursivePatternToNumber(appxPattern)
+			frequencyArray[j] += 1
+
+	frequentPatterns = []
+	maxCount = max(frequencyArray)
+	for i in range(0, len(frequencyArray)):
+		if frequencyArray[i] == maxCount:
+			frequentPatterns.append(RecursiveNumberToPattern(i, k))
+	return frequentPatterns
+	
+
 def computingFrequenciesWithMismatches(text, k , d):
 	frequencyArray = []
 	for i in range(0, 4**k):
@@ -97,9 +142,16 @@ def computingFrequenciesWithMismatches(text, k , d):
 	for i in range(0, len(text) - k + 1):
 		pattern = text[i: i+k]
 		neighborhood = neighbors(pattern, d)
-		for pattern in neighborhood:
-			j = RecursivePatternToNumber(pattern)
+		for appxPattern in neighborhood:
+			j = RecursivePatternToNumber(appxPattern)
 			frequencyArray[j] += 1
-	return frequencyArray
-
-
+	frequentPatterns = []
+	maxCount = max(frequencyArray)
+	for i in range(0, len(frequencyArray)):
+		if frequencyArray[i] == maxCount:
+			frequentPatterns.append(RecursiveNumberToPattern(i, k))
+	return frequentPatterns
+	
+x = FrequentWordsWithMismatchesAndReverseComplement('AGTAGTCTAGTATATCAATCACTCAATAGTATATAGTCACACACAATCTCAAGTCACACACACACAAGTAGTCTATCAAGTCAATCACTCAAGTCTCACACACACAATCAATAGTCACAATAGTCACTCAAGTCAATATCACACTCTAGTCACTATAGTAGTATCACAAGTCAAGTCACTAGTAGTATCTCACTCTCTCACTCACACA',5 ,2)
+for i in range(0, len(x)):
+	print x[i]
