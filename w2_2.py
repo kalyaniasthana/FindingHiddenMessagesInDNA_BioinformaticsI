@@ -152,6 +152,26 @@ def computingFrequenciesWithMismatches(text, k , d):
 			frequentPatterns.append(RecursiveNumberToPattern(i, k))
 	return frequentPatterns
 	
-x = FrequentWordsWithMismatchesAndReverseComplement('AGTAGTCTAGTATATCAATCACTCAATAGTATATAGTCACACACAATCTCAAGTCACACACACACAAGTAGTCTATCAAGTCAATCACTCAAGTCTCACACACACAATCAATAGTCACAATAGTCACTCAAGTCAATATCACACTCTAGTCACTATAGTAGTATCACAAGTCAAGTCACTAGTAGTATCTCACTCTCTCACTCACACA',5 ,2)
-for i in range(0, len(x)):
-	print x[i]
+def MotifEnumeration(dna, k, d):
+	pattern = []
+	neighborhood = []
+	for dna_ in dna:
+		myneigh = []
+		for i in range(0, len(dna_) - k + 1):
+			n = neighbors(dna_[i:i+k], d)
+			for j in n:
+				if j not in myneigh:
+					myneigh.append(j)
+		neighborhood.append(myneigh)
+
+	pattern =  list(set(neighborhood[0]).intersection(*neighborhood))
+	return pattern
+
+
+dna = ['ATTTGGC','TGCCTTA','CGGTATC','GAAAATT']
+k = 3
+d = 1
+me = MotifEnumeration(dna, k, d)
+for i in me:
+	print i
+
