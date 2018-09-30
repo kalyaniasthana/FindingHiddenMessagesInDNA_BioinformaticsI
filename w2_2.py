@@ -167,10 +167,9 @@ def MotifEnumeration(dna, k, d):
 	pattern =  list(set(neighborhood[0]).intersection(*neighborhood))
 	return pattern
 
-
-dna = ['ATTTGGC','TGCCTTA','CGGTATC','GAAAATT']
-k = 3
-d = 1
+dna = ['GCCTGTGTCTATACCTCAAGCCATC','TATCGTCACGTCACCCCATCCTATA','TTACCAGTCTATGCAAAAACGGTCG','TTCGCTGCGCACGAAGGGCGAAACC','AATAATCGTCAGCCAGGCTCCAACC','GGACCTCCCAAAGTGAAGCAGGCAA']
+k = 5
+d = 2
 me = MotifEnumeration(dna, k, d)
 for i in me:
 	print i
