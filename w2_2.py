@@ -167,10 +167,30 @@ def MotifEnumeration(dna, k, d):
 	pattern =  list(set(neighborhood[0]).intersection(*neighborhood))
 	return pattern
 
-dna = ['GCCTGTGTCTATACCTCAAGCCATC','TATCGTCACGTCACCCCATCCTATA','TTACCAGTCTATGCAAAAACGGTCG','TTCGCTGCGCACGAAGGGCGAAACC','AATAATCGTCAGCCAGGCTCCAACC','GGACCTCCCAAAGTGAAGCAGGCAA']
-k = 5
-d = 2
-me = MotifEnumeration(dna, k, d)
-for i in me:
-	print i
+def DistanceBetweenPatternAndStrings(pattern, dna):
+	k = len(pattern)
+	distance = 0
+	for dna_ in dna:
+		hd = 9999999
+		for i in range(0, len(dna_) - k + 1):
+			pattern_ = dna_[i:i+k]
+			if hd > hammingDistance(pattern, pattern_):
+				hd = hammingDistance(pattern, pattern_)
+		distance += hd
+	return distance
+
+def MedianString(dna, k):
+	distance = 9999999
+	median = ''
+	for i in range(0, 4**k):
+		pattern = RecursiveNumberToPattern(i, k)
+		if distance > DistanceBetweenPatternAndStrings(pattern, dna):
+			distance = DistanceBetweenPatternAndStrings(pattern, dna)
+			median = pattern
+	return median
+
+dna = 'GCGCGTCCGGACTAGAATGATGGTCACACACGGTGTCTCCTC CCCCAGTCCACCTACACATTCCGGATTTGGAGGTGCTGGTCG CCGTTACTGCCACACAAATCGGAAACGAGCCACACAACAGGT GTGGCCCGGCATCGCCGCTTACGCGAATTTAACACAAGGGCT AATGGAACTTCTAACACACACGTCACCGCTATCGGATAACCC CACACACCGTCCATGCTGCACACAACCTCAGTGTACTTTCCG TGTTGTACACATGACACAAAATGGTCACTGTAGCAAGCTCTT TAGTTTACATACGTCTGGTGATCAAACACAGGGTAGCCCCAC AGCTCCATTCAGAACAGCAACACAAATTCTCTCTTTTGTTCA GACTCACGACCAACTATTGTAGTGGTAGTATGAGGAGACACA'
+k = 6
+dna = dna.split(' ')
+print MedianString(dna, k)
 
