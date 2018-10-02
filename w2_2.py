@@ -240,10 +240,34 @@ def ProfileMatrixFromMotifs(motifs):
 			l[i] /= len(motifs[0])
 	return profile_mat
 
+def score(motifs):
+	profile = ProfileMatrixFromMotifs(motifs)
+	consensus = []
+	for i in range(0, len(motifs[0])):
+		m = profile['A'][i]
+		let = 'A'
+		if profile['C'][i] > m:
+			let = 'C'
+			m = profile['C'][i]
+		if profile['G'][i] > m:
+			let = 'G'
+			m = profile['G'][i]
+		if profile['T'][i] > m:
+			let = 'T'
+			m = profile['T'][i]
+		consensus.append(let)
+	consensus = ''.join(consensus)
+	score = 0
+	for i in range(0, len(motifs)):
+		score += hammingDistance(motifs[i],consensus)
+	return score
+
+
+
 
 dna = 'GGC AAG CAA CAC CAA'
 dna = dna.split(' ')
-best_motifs = ProfileMatrixFromMotifs(dna)
+best_motifs = score(dna)
 print best_motifs
 
 
