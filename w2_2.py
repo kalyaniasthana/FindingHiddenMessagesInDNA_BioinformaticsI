@@ -1,3 +1,4 @@
+from __future__ import division
 from ch6 import *
 import numpy
 
@@ -215,6 +216,35 @@ def ProfileMostProbable(text, k ,profile_mat):
 			most_prob = kmers[i]
 	return most_prob
 
+def ProfileMatrixFromMotifs(motifs):
+	profile_mat = {}
+	profile_mat = {'A': [], 'C': [],'G': [], 'T': []}
+	bases = ['A','C', 'G','T']
+	for base in bases:
+		for i in range(0, len(motifs[0])):
+			profile_mat[base].append(0)
+	for i in range(0, len(motifs)):
+		mymotif = motifs[i]
+		for j in range(0, len(mymotif)):
+			if mymotif[j] == 'A':
+				profile_mat['A'][j] += 1			
+			elif mymotif[j] == 'C':
+				profile_mat['C'][j] += 1
+			elif mymotif[j] == 'G':
+				profile_mat['G'][j] += 1
+			elif mymotif[j] == 'T':
+				profile_mat['T'][j] += 1
+	for key in profile_mat.keys():
+		l = profile_mat[key]
+		for i in range(0, len(l)):
+			l[i] /= len(motifs[0])
+	return profile_mat
+
+
+dna = 'GGC AAG CAA CAC CAA'
+dna = dna.split(' ')
+best_motifs = ProfileMatrixFromMotifs(dna)
+print best_motifs
 
 
 
