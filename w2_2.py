@@ -214,15 +214,16 @@ def ProfileMostProbable(text, k ,profile_mat):
 	for i in range(0, len(kmers)):
 		if probs[i] == max_prob:
 			most_prob = kmers[i]
+			break
 	return most_prob
 
 def ProfileMatrixFromMotifs(motifs):
 	profile_mat = {}
 	profile_mat = {'A': [], 'C': [],'G': [], 'T': []}
 	bases = ['A','C', 'G','T']
-	for base in bases:
+	for key in profile_mat.keys():
 		for i in range(0, len(motifs[0])):
-			profile_mat[base].append(0)
+			profile_mat[key].append(0)
 	for i in range(0, len(motifs)):
 		mymotif = motifs[i]
 		for j in range(0, len(mymotif)):
@@ -262,13 +263,32 @@ def score(motifs):
 		score += hammingDistance(motifs[i],consensus)
 	return score
 
+def GreedyMotifSearch(dna, k, t):
+	best_motifs = []
+	best_score = 999999
+	for i in range(0, len(dna[0]) - k + 1):
+		motifs = []
+		motifs.append(dna[0][i:i+k])
+		for j in range(1,t):
+			profile = ProfileMatrixFromMotifs(motifs)
+			mymotif = ProfileMostProbable(dna[j], k, profile)
+			motifs.append(mymotif)
+		current_score = score(motifs)
+		print current_score
+		print profile
+		print motifs
+		if current_score < best_score:
+			best_score = current_score
+			best_motifs = motifs
+
+	return best_motifs
 
 
-
-dna = 'GGC AAG CAA CAC CAA'
+k = 3
+t = 5
+dna = 'GGCGTTCAGGCA AAGAATCAGTCA CAAGGAGTTCGC CACGTCAATCAC CAATAATATTCG'
 dna = dna.split(' ')
-best_motifs = score(dna)
-print best_motifs
+print GreedyMotifSearch(dna, k, t)
 
 
 
