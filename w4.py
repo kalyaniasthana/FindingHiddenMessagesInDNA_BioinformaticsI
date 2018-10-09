@@ -3,16 +3,17 @@ from w2_2 import *
 from ch6 import *
 import numpy
 import random
-import numpy as np
+from numpy.random import choice
 
 def inputFile(file):
     lines = file.readline().split()
     k = int(lines[0])
     t = int(lines[1])
+    N = int(lines[2])
     dna = []
     for i in range(t):
         dna.append(file.readline().strip())
-    return (dna,k,t)
+    return (dna,k,t,N)
 
 def MotifsFromProfileMatrix(dna, profile, k):
 	motifs = []
@@ -56,47 +57,24 @@ def RandomizedMotifSearchWithIterations(dna, k, t):
 			break
 	return best_motifs
 
-def ProbabilityMatrix(motifs, profile):
+def Probabilities(motifs, profile):
 	probs = []
 	for motif in motifs:
 		prob = 1
-		for j in range(0, len(motif)):
-			if motif[j] == 'A':
-				prob *= profile['A'][j]
-			elif motif[j] == 'C':
-				prob *= profile['C'][j]
-			elif motif[j] == 'G':
-				prob *= profile['G'][j]
-			elif motif[j] == 'T':
-				prob *= profile['T'][j]
-
+		for j in range(len(motif)):
+			prob = prob*profile[motif[j]][j]
 		probs.append(prob)
-	if sum(probs) != 1:
-		my_sum = sum(probs)
-		for prob in probs:
-			prob /= my_sum
 	return probs
 
+def RandomMotif(probs, dna_string, k):
+	sums = float(sum(probs))
+	random_prob = random.random()
+	my_sum = 0.0
+	for i in range(len(probs)):
+		my_sum += probs[i]
+		if random_prob <= my_sum/sums:
+			return dna_string[i:i+k]
 
-def ProfileRandomlyGeneratedKmer(probability_list, dnai, k):
-	list_of_candidate_kmers = []
-	for i in range(0, len(dnai) - k + 1):
-		list_of_candidate_kmers.append(dnai[i:i+k])
-	motif_i = list_of_candidate_kmers[np.argmin((np.cumsum(probability_list) / sum(probability_list)) < np.random.rand())]
-	return motif_i
-
-
-'''
-def RandomChoice(probs, dnai):
-	my_prob = random.choice(probs)
-	my_motif = ''
-	#for prob in probs:
-		#if prob == my_probs:
-	for i in range(0, len(motifs)):
-		if probs[i] == my_prob:
-			my_motif = motifs[i]
-			break
-	return my_motif'''
 
 def GibbsSampler(dna, k, t, N):
 	motifs = []
@@ -106,25 +84,51 @@ def GibbsSampler(dna, k, t, N):
 			kmer = dna_[random_number: random_number + k]
 			motifs.append(kmer)
 	best_motifs = motifs
-	best_score = 99999
-	for j in range(0, 20):
-		i = random.choice(range(t))
+	best_score = score(best_motifs)
+	for j in range(0, N):
+		i = random.randrange(t)
 		motifs.remove(motifs[i])
 		profile = ProfileMatrixFromMotifsWithPseudocounts(motifs, 1)
-		probability_list = ProbabilityMatrix(motifs, profile)
-		my_motif = ProfileRandomlyGeneratedKmer(probability_list, dna[i], k)
+		dnai_motifs= []
+
+		for l in range(len(dna[i]) - k + 1):
+			dnai_motifs.append(dna[i][l:l+k])
+
+		probs = Probabilities(dnai_motifs, profile)
+		my_motif = RandomMotif(probs, dna[i], k)
 		motifs.insert(i, my_motif)
 		my_score = score(motifs)
 		if my_score < best_score:
 			best_motifs = motifs
 			best_score = my_score
 
+	return (best_motifs, best_score)
+
+def GibbsSamplerIterative(dna, k, t, N):
+	best_motifs = []
+	for dna_ in dna:
+			random_number = random.randint(0,len(dna_) - k)
+			kmer = dna_[random_number: random_number + k]
+			best_motifs.append(kmer)
+	best_score = score(best_motifs)
+	for i in range(0, 250):
+		(motifs, my_score) = GibbsSampler(dna, k, t, N)
+		if my_score < best_score:
+			best_motifs = motifs
+			best_score = my_score
 
 	return best_motifs
 
-dna = 'CGCCCCTCTCGGGGGTGTTCAGTAACCGGCCA GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG TAGTACCGAGACCGAAAGAAGTATACAGGCGT TAGATCAAGTTTCAGGTGCACGTCGGTGAACC AATCCACCAGCTCCACGTGCAATGTTGGCCTA'
-dna = dna.split(' ')
+file = inputFile(open('../Downloads/dataset_163_4.txt'))
+dna = file[0]
+k = file[1]
+t = file[2]
+N = file[3]
+N = N//10
 
-print GibbsSampler(dna, 8, 5, 100)
+motifs = GibbsSamplerIterative(dna, k, t, N)
+for motif in motifs:
+	print motif
+
 
 
