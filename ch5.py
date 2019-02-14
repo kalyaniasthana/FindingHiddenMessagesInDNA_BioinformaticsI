@@ -37,5 +37,5 @@ def sort_and_deduplicate(l):
 result = []
 for i in range(0 , len(string)):
 	result.append(frequencyWords(string[i: i+ L], k))
-print sort_and_deduplicate(result)
+print(sort_and_deduplicate(result))
 

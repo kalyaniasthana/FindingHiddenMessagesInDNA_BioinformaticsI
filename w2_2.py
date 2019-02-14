@@ -49,12 +49,12 @@ def immediateNeighbours(pattern):
 				pattern = list(pattern)
 				pattern[i] = bases[j]
 				pattern = ''.join(pattern)
-				print pattern
+				print(pattern)
 				neighborhood.append(pattern)
 				pattern = list(pattern)
 				pattern[i] = symbol
 				pattern = ''.join(pattern)
-				print pattern
+				print(pattern)
 	return neighborhood
 
 def neighbors(pattern, d):
@@ -271,7 +271,7 @@ def ProfileMatrixFromMotifsWithPseudocounts(motifs, pseudocount):
 
 
 def score(motifs):
-	profile = ProfileMatrixFromMotifs(motifs)
+	profile = ProfileMatrixFromMotifsWithPseudocounts(motifs, 1)
 	consensus = []
 	for i in range(0, len(motifs[0])):
 		m = profile['A'][i]
@@ -326,8 +326,10 @@ def GreedyMotifSearchWithPseudocounts(dna, k, t, pseudocount):
 
 	return best_motifs
 
+motifs = ['CCA', 'CCT', 'CTT', 'TTG']
+profile_mat = ProfileMatrixFromMotifsWithPseudocounts(motifs, 1)
 
-
+print(ProfileMostProbable('ATGTTTTG',3,profile_mat))
 
 
 

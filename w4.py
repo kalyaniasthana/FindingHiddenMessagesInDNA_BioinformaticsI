@@ -1,4 +1,4 @@
-from __future__ import division
+#from __future__ import division
 from w2_2 import *
 from ch6 import *
 import numpy
@@ -50,7 +50,7 @@ def RandomizedMotifSearchWithIterations(dna, k, t):
 			best_score = my_score
 			best_motifs = motifs
 			iterations = 0
-			print best_score
+			print(best_score)
 		else:
 			iterations += 1
 		if iterations > 500:
@@ -118,7 +118,7 @@ def GibbsSamplerIterative(dna, k, t, N):
 			best_score = my_score
 
 	return best_motifs
-
+'''
 file = inputFile(open('../Downloads/dataset_163_4.txt'))
 dna = file[0]
 k = file[1]
@@ -128,7 +128,7 @@ N = N//10
 
 motifs = GibbsSamplerIterative(dna, k, t, N)
 for motif in motifs:
-	print motif
-
+	print(motif)
+'''
 
 

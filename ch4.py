@@ -8,4 +8,4 @@ l = sorted(l)
 for i in range(0,len(l)):
 	l[i] = str(l[i])
 l = ' '.join(l)
-print l
+print(l)
